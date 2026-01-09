@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Self-taught Front-End Developer — HTML • CSS • JavaScript" />
+  <meta name="last-modified" content="2026-01-10" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:        #04060e;
+      --text:      #e8f2ff;
+      --text-soft: #a8c0ff;
+      --cyan:      #00f5ff;
+      --magenta:   #ff00e0;
+      --purple:    #7b00ff;
+      --glass:     rgba(18, 22, 40, 0.45);
+      --border:    rgba(0, 245, 255, 0.16);
+      --glow:      0 0 30px rgba(0, 245, 255, 0.35);
+
+      /* Fluid typography */
+      --fs-300: clamp(0.8125rem, 0.75rem + 0.3125vw, 0.9375rem);
+      --fs-400: clamp(1rem,     0.9rem   + 0.5vw,     1.125rem);
+      --fs-500: clamp(1.125rem, 1rem     + 0.625vw,   1.375rem);
+      --fs-600: clamp(1.375rem, 1.2rem   + 0.875vw,   1.75rem);
+      --fs-700: clamp(1.75rem,  1.5rem   + 1.125vw,   2.25rem);
+      --fs-800: clamp(2.25rem,  1.9rem   + 1.75vw,    3.25rem);
+      --fs-900: clamp(3rem,     2.5rem   + 2.5vw,     4.5rem);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      position: relative;
+      line-height: 1.58;
+      font-size: var(--fs-400);
+    }
+
+    /* Animated cinematic background */
+    body::before,
+    body::after,
+    body > .bg-layer {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body::before {
+      background: 
+        radial-gradient(ellipse at 10% 20%, rgba(0,245,255,0.13) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 80%, rgba(255,0,224,0.11) 0%, transparent 60%),
+        radial-gradient(ellipse at 40% 90%, rgba(123,0,255,0.08) 0%, transparent 65%);
+      background-size: 200% 200%, 180% 180%, 220% 220%;
+      animation: 
+        drift1 120s linear infinite,
+        drift2 180s linear infinite reverse,
+        drift3 240s linear infinite;
+    }
+
+    body::after {
+      background: 
+        radial-gradient(#ffffff 0.9px, transparent 0.9px),
+        radial-gradient(#ffffff 0.9px, transparent 0.9px);
+      background-size: 60px 60px;
+      background-position: 0 0, 30px 30px;
+      opacity: 0.022;
+      mix-blend-mode: screen;
+    }
+
+    .bg-layer {
+      background: radial-gradient(circle at 50% 50%, rgba(0,245,255,0.04) 0%, transparent 70%);
+      opacity: 0.6;
+      animation: pulseGlow 20s ease-in-out infinite;
+    }
+
+    @keyframes drift1 { 0% { background-position: 0% 0%; }   100% { background-position: 100% 100%; } }
+    @keyframes drift2 { 0% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }   }
+    @keyframes drift3 { 0% { background-position: 50% 100%; } 100% { background-position: 50% 0%; }   }
+    @keyframes pulseGlow { 0%,100% { opacity: 0.6; } 50% { opacity: 0.85; } }
+
+    .container {
+      width: min(100% - 2rem, 1140px);
+      margin-inline: auto;
+      padding-inline: clamp(1rem, 5vw, 2.5rem);
+    }
+
+    nav {
+      position: fixed;
+      inset-block-start: 0;
+      inset-inline: 0;
+      z-index: 100;
+      backdrop-filter: blur(18px);
+      background: rgba(4,6,14,0.65);
+      border-block-end: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      min-height: 4.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.2rem;
+      padding-block: 1rem;
+    }
+
+    .logo {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(1.6rem, 5vw, 2.1rem);
+      font-weight: 600;
+      color: var(--cyan);
+      text-decoration: none;
+      letter-spacing: -1px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.6rem 2.4rem;
+      list-style: none;
+      font-size: var(--fs-400);
+    }
+
+    .nav-links a {
+      color: var(--text-soft);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--cyan);
+      outline: none;
+    }
+
+    main {
+      padding-block-start: clamp(7rem, 15vw, 11rem);
+    }
+
+    h1 {
+      font-family: 'Fira Code', monospace;
+      font-size: var(--fs-900);
+      font-weight: 600;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 0.92;
+      margin-block-end: 0.6rem;
+    }
+
+    .contact-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem 2.5rem;
+      margin-block-end: 2.5rem;
+      font-size: var(--fs-500);
+      color: var(--text-soft);
+    }
+
+    .contact-row a {
+      color: var(--cyan);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .contact-row a:hover,
+    .contact-row a:focus-visible {
+      color: white;
+      text-shadow: 0 0 12px var(--cyan);
+    }
+
+    .subtitle {
+      font-size: var(--fs-600);
+      color: var(--text-soft);
+      margin-block-end: 2rem;
+    }
+
+    .meta {
+      font-size: var(--fs-400);
+      opacity: 0.85;
+      margin-block-end: 2.5rem;
+    }
+
+    .summary {
+      max-width: 65ch;
+      font-size: var(--fs-500);
+      opacity: 0.94;
+    }
+
+    section {
+      padding-block: clamp(6rem, 12vw, 10rem) clamp(8rem, 14vw, 12rem);
+    }
+
+    h2 {
+      font-family: 'Fira Code', monospace;
+      font-size: var(--fs-800);
+      text-align: center;
+      margin-block-end: 3.5rem;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      background-size: 200% 100%;
+      animation: shine 10s linear infinite;
+    }
+
+    @keyframes shine {
+      0%,100% { background-position: 200% 0; }
+      50%     { background-position: -200% 0; }
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.2rem 1.8rem;
+    }
+
+    .skill {
+      background: var(--glass);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: clamp(1rem, 2.5vw, 1.4rem);
+      text-align: center;
+      font-size: var(--fs-400);
+      font-weight: 500;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .skill:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: var(--glow);
+      border-color: var(--cyan);
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 820px;
+      margin-inline: auto;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 1.8rem;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--cyan), transparent);
+    }
+
+    .item {
+      position: relative;
+      margin-block-end: 4.5rem;
+      padding-inline-start: 4.5rem;
+    }
+
+    .dot {
+      position: absolute;
+      inset-inline-start: 1.2rem;
+      inset-block-start: 0.6rem;
+      width: 18px;
+      height: 18px;
+      background: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(0,245,255,0.28);
+    }
+
+    .content {
+      background: var(--glass);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(1.3rem, 3vw, 1.8rem);
+      transition: transform 0.4s ease;
+    }
+
+    .content:hover {
+      transform: translateX(12px);
+      box-shadow: var(--glow);
+    }
+
+    .date {
+      font-size: var(--fs-300);
+      opacity: 0.78;
+      margin-block-end: 0.8rem;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+      gap: 2.2rem;
+      margin-block-start: 3.5rem;
+    }
+
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: clamp(1.6rem, 3.5vw, 2.2rem);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0;
+      transform: translateY(40px);
+      
+      /* ── الحل الرئيسي لمحاذاة الأزرار في الأسفل ── */
+      display: flex;
+      flex-direction: column;
+      min-height: 340px;
+    }
+
+    .card > * {
+      margin-block-end: 1rem;
+    }
+
+    .card > p {
+      flex-grow: 1;
+      margin-block-end: auto;
+    }
+
+    .card .tech {
+      margin-block: 1.2rem 0;
+    }
+
+    .card .btn {
+      margin-block-start: auto;
+      align-self: flex-start;
+    }
+
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card:hover {
+      transform: translateY(-12px);
+      box-shadow: var(--glow);
+      border-color: var(--cyan);
+    }
+
+    .card h3 {
+      font-family: 'Fira Code', monospace;
+      font-size: var(--fs-600);
+      margin-block-end: 1rem;
+    }
+
+    .tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+
+    .tech span {
+      background: rgba(0,245,255,0.14);
+      color: var(--cyan);
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: var(--fs-300);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: clamp(0.7rem, 2vw, 0.9rem) clamp(1.3rem, 3.5vw, 1.9rem);
+      background: linear-gradient(45deg, var(--cyan), var(--magenta));
+      color: #000;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 999px;
+      font-size: var(--fs-400);
+      transition: all 0.4s ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: scale(1.06);
+      box-shadow: var(--glow);
+    }
+
+    footer {
+      text-align: center;
+      padding-block: 5rem 7rem;
+      opacity: 0.55;
+      font-size: var(--fs-300);
+    }
+
+    /* Media Queries (Mobile-First) */
+    @media (max-width: 480px) {
+      h1 { font-size: var(--fs-800); line-height: 1; }
+      .contact-row { flex-direction: column; gap: 1rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .nav-inner {
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+      .nav-links {
+        justify-content: center;
+        gap: 1.2rem 2rem;
+      }
+      .timeline::before { inset-inline-start: 1.1rem; }
+      .item { padding-inline-start: 3.2rem; }
+      .dot { inset-inline-start: 0.5rem; }
+    }
+
+    @media (min-width: 1024px) {
+      .container { max-width: 1140px; }
+      section { padding-block: 12rem 14rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-layer"></div>
+
+  <nav>
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#" class="logo">CV</a>
+        <ul class="nav-links">
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#projects">Projects</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <section id="hero">
+      <div class="container">
+        <h1>Gaafar Mohammad</h1>
+        
+        <div class="contact-row">
+          <a href="tel:+60145220410">+60 145 220 410</a>
+          <a href="mailto:mohammadgaafar00@gmail.com">mohammadgaafar00@gmail.com</a>
+        </div>
+
+        <div class="subtitle">Self-Taught Front-End Developer</div>
+        <div class="meta">📍 Kuala Lumpur, Malaysia</div>
+        <p class="summary">
+          Self-taught Front-End Developer with a solid foundation in HTML, CSS, and JavaScript, and practical experience building real-world web applications.<br><br>
+          Transitioned into web development in early 2025 and rapidly delivered multiple interactive and user-focused projects, including a task management system, an animated 3D gifting page, and a secure password generator.<br><br>
+          Brings a strong analytical mindset from AI Prompt Engineering, enabling efficient problem-solving, clean code structure, and intuitive UI/UX decisions.<br>
+          Currently expanding toward full-stack development and seeking entry-level or freelance front-end opportunities.
+        </p>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="container">
+        <h2>Skills</h2>
+        <div class="skills-grid">
+          <div class="skill">HTML</div>
+          <div class="skill">CSS</div>
+          <div class="skill">JavaScript</div>
+          <div class="skill">Responsive Web Design</div>
+          <div class="skill">Basic UI/UX Principles</div>
+          <div class="skill">AI Prompt Engineering</div>
+          <div class="skill">Analytical Thinking & Problem Solving</div>
+          <div class="skill">Self-Learning & Research Skills</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="container">
+        <h2>Experience</h2>
+        <div class="timeline">
+          <div class="item">
+            <div class="dot"></div>
+            <div class="content">
+              <h3>Front-End Developer (Self-Taught / Personal Projects)</h3>
+              <div class="date">01/2025 – Present • Kuala Lumpur, Malaysia</div>
+              <ul>
+                <li>Designed and developed responsive web applications using HTML, CSS, and JavaScript</li>
+                <li>Built interactive user interfaces with a focus on usability, performance, and clean layout</li>
+                <li>Applied problem-solving skills and research-driven learning to overcome technical challenges</li>
+                <li>Implemented basic security and data persistence techniques in client-side applications</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="container">
+        <h2>Projects</h2>
+        <div class="projects-grid">
+
+          <div class="card">
+            <h3>Advanced To-Do List Application</h3>
+            <p>Task management system with categorized states (Overdue, In-Progress, Completed). Real-time UI updates and persistent data storage. Focus on clarity, productivity, and smooth user interaction.</p>
+            <div class="tech">
+              <span>HTML</span><span>CSS</span><span>JavaScript</span>
+            </div>
+            <a href="https://programmaker-gif.github.io/to-do-list-/" target="_blank" class="btn">Live Demo</a>
+          </div>
+
+          <div class="card">
+            <h3>Interactive 3D Damask Rose Gifting Page</h3>
+            <p>Visually engaging 3D-style interactive page simulating a virtual flower gift. Animated elements and smooth transitions for an immersive user experience. Demonstrates creative UI design and animation logic.</p>
+            <div class="tech">
+              <span>HTML</span><span>CSS</span><span>JavaScript</span>
+            </div>
+            <a href="https://programmaker-gif.github.io/flower/" target="_blank" class="btn">Live Demo</a>
+          </div>
+
+          <div class="card">
+            <h3>PowerPass – Secure Password Generator</h3>
+            <p>Customizable password length and strength options. One-click copy to clipboard and reset functionality. Password history with partial masking for added privacy.</p>
+            <div class="tech">
+              <span>HTML</span><span>CSS</span><span>JavaScript</span>
+            </div>
+            <a href="https://programmaker-gif.github.io/passwords/" target="_blank" class="btn">Live Demo</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 Gaafar Mohammad
+  </footer>
+
+  <script>
+    // Reveal project cards on scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -100px 0px" });
+
+    document.querySelectorAll('.card').forEach(card => observer.observe(card));
+  </script>
+</body>
+</html>
